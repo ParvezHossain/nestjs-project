@@ -17,11 +17,13 @@ import { UpdateUserDto } from 'src/users/dtos/UpdateUser.dto';
 import { UsersService } from 'src/users/services/users/users.service';
 import { Request, Response } from 'express';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { Public } from 'src/decorators/public.decorator';
 
 @Controller('users')
 export class UsersController {
     constructor(private userService: UsersService) { }
 
+    @Public()
     @Get(':id')
     async getUserById(
         @Param('id', ParseIntPipe) id: number,
@@ -44,7 +46,6 @@ export class UsersController {
         }
     }
 
-    @UseGuards(AuthGuard)
     @Get('')
     async getUsers(@Req() req: Request, @Res() res: Response) {
         try {
