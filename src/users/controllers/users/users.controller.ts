@@ -10,11 +10,13 @@ import {
     Post,
     Put,
     HttpStatus,
+    UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
 import { UpdateUserDto } from 'src/users/dtos/UpdateUser.dto';
 import { UsersService } from 'src/users/services/users/users.service';
 import { Request, Response } from 'express';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -42,7 +44,8 @@ export class UsersController {
         }
     }
 
-    @Get('/')
+    @UseGuards(AuthGuard)
+    @Get('')
     async getUsers(@Req() req: Request, @Res() res: Response) {
         try {
             const userList = await this.userService.fetchUser();

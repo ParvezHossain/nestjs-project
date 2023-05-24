@@ -6,6 +6,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './typeorm/entities/User';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
     imports: [
@@ -21,6 +22,7 @@ import { UsersModule } from './users/users.module';
             autoLoadEntities: true,
         }),
         UsersModule,
+        AuthModule,
     ],
     controllers: [AppController],
     providers: [
