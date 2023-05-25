@@ -10,20 +10,17 @@ import {
     Post,
     Put,
     HttpStatus,
-    UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
 import { UpdateUserDto } from 'src/users/dtos/UpdateUser.dto';
 import { UsersService } from 'src/users/services/users/users.service';
 import { Request, Response } from 'express';
-import { AuthGuard } from 'src/auth/auth.guard';
 import { Public } from 'src/decorators/public.decorator';
 
 @Controller('users')
 export class UsersController {
-    constructor(private userService: UsersService) { }
+    constructor(private userService: UsersService) {}
 
-    @Public()
     @Get(':id')
     async getUserById(
         @Param('id', ParseIntPipe) id: number,
@@ -57,6 +54,7 @@ export class UsersController {
         }
     }
 
+    @Public()
     @Post()
     createUser(@Body() createUserDto: CreateUserDto) {
         return this.userService.createUser(createUserDto);

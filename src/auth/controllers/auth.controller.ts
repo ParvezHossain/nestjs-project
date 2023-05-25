@@ -11,11 +11,13 @@ import {
 import { AuthService } from '../services/auth/auth.service';
 import { Response } from 'express';
 import { AuthGuard } from '../auth.guard';
+import { Public } from 'src/decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService) {}
 
+    @Public()
     @HttpCode(HttpStatus.OK)
     @Post('login')
     async signIn(@Body() signInDto: Record<string, any>) {

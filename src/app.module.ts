@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './typeorm/entities/User';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from './config/config.module';
 
 @Module({
     imports: [
@@ -21,6 +22,7 @@ import { AuthModule } from './auth/auth.module';
             synchronize: true,
             autoLoadEntities: true,
         }),
+        ConfigModule,
         UsersModule,
         AuthModule,
     ],
