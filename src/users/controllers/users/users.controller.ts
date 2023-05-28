@@ -16,12 +16,15 @@ import { UpdateUserDto } from 'src/users/dtos/UpdateUser.dto';
 import { UsersService } from 'src/users/services/users/users.service';
 import { Request, Response } from 'express';
 import { Public } from 'src/decorators/public.decorator';
+import { Roles } from 'src/decorators/roles.decorator';
+import { Role } from 'src/enum/role.enum';
 
 @Controller('users')
 export class UsersController {
     constructor(private userService: UsersService) {}
 
     @Get(':id')
+    @Roles(Role.User)
     async getUserById(
         @Param('id', ParseIntPipe) id: number,
         @Res() res: Response,
@@ -44,6 +47,7 @@ export class UsersController {
     }
 
     @Get('')
+    @Roles(Role.User)
     async getUsers(@Req() req: Request, @Res() res: Response) {
         try {
             const userList = await this.userService.fetchUser();
@@ -61,6 +65,7 @@ export class UsersController {
     }
 
     @Put(':id')
+    @Roles(Role.Admin)
     async updateUserById(
         @Param('id', ParseIntPipe) id: number,
         @Body() updateUserDto: UpdateUserDto,
@@ -69,6 +74,7 @@ export class UsersController {
     }
 
     @Delete(':id')
+    @Roles(Role.Admin)
     async deleteUserById(@Param('id', ParseIntPipe) id: number) {
         await this.userService.deleteUser(id);
     }

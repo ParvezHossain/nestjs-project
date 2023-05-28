@@ -23,8 +23,8 @@ import { ConfigModule } from './config/config.module';
             autoLoadEntities: true,
         }),
         ConfigModule,
-        UsersModule,
         AuthModule,
+        UsersModule,
     ],
     controllers: [AppController],
     providers: [
