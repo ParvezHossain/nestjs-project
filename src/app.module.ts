@@ -1,13 +1,13 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { NotFoundMiddleware } from './middlewares/not-found.middleware';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_FILTER } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './typeorm/entities/User';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from './config/config.module';
+import { NotFoundFilter } from './exceptions/not-found.filter';
 
 @Module({
     imports: [
@@ -17,7 +17,7 @@ import { ConfigModule } from './config/config.module';
             port: 3306,
             username: 'root',
             password: '',
-            database: 'laravel',
+            database: 'base_visu',
             entities: [User],
             synchronize: true,
             autoLoadEntities: true,
@@ -30,13 +30,9 @@ import { ConfigModule } from './config/config.module';
     providers: [
         AppService,
         {
-            provide: APP_GUARD,
-            useClass: NotFoundMiddleware,
+            provide: APP_FILTER,
+            useClass: NotFoundFilter,
         },
     ],
 })
-export class AppModule implements NestModule {
-    configure(consumer: MiddlewareConsumer) {
-        consumer.apply(NotFoundMiddleware).forRoutes('*');
-    }
-}
+export class AppModule {}
