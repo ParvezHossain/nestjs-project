@@ -1,13 +1,12 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { APP_FILTER } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './typeorm/entities/User';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from './config/config.module';
-import { NotFoundFilter } from './exceptions/not-found.filter';
+import { LoggerMiddleware } from './utils/logger.service';
 
 @Module({
     imports: [
@@ -27,12 +26,11 @@ import { NotFoundFilter } from './exceptions/not-found.filter';
         UsersModule,
     ],
     controllers: [AppController],
-    providers: [
-        AppService,
-        {
-            provide: APP_FILTER,
-            useClass: NotFoundFilter,
-        },
-    ],
+    providers: [AppService, LoggerMiddleware],
 })
-export class AppModule {}
+export class AppModule {
+    constructor(private readonly logger: LoggerMiddleware) {}
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(this.logger.use.bind(this.logger)).forRoutes('*');
+    }
+}

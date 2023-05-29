@@ -16,10 +16,10 @@ export class User {
     @Column({ unique: true, nullable: false })
     @IsEmail({}, { message: 'Invalid email format' })
     @Transform(({ value }) => value.toLowerCase()) // Optional: transform email to lowercase
-    email: string
+    email: string;
 
     @Column({ nullable: false, default: 'user' })
-    role: string
+    role: string;
 
     @Column()
     createdAt: Date;

@@ -36,9 +36,11 @@
     "helmet": "^7.0.0",
     "mysql": "^2.18.1",
     "mysql2": "^3.3.2",
+    "nest-winston": "^1.9.2",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
-    "typeorm": "^0.3.16"
+    "typeorm": "^0.3.16",
+    "winston": "^3.9.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

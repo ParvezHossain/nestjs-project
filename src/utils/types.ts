@@ -10,8 +10,8 @@ export type UpdateUserParams = {
     password: string;
     email: string;
     role: string;
-}
+};
 
 export type GetUserByIdParams = {
     id: number;
-}
+};
