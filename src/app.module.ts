@@ -17,7 +17,7 @@ import { ConfigModule } from './config/config.module';
             port: 3306,
             username: 'root',
             password: '',
-            database: 'base_visu',
+            database: 'laravel',
             entities: [User],
             synchronize: true,
             autoLoadEntities: true,
