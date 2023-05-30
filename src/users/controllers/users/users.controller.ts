@@ -10,6 +10,8 @@ import {
     Post,
     Put,
     HttpStatus,
+    UsePipes,
+    ValidationPipe,
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
 import { UpdateUserDto } from 'src/users/dtos/UpdateUser.dto';
@@ -18,10 +20,14 @@ import { Request, Response } from 'express';
 import { Public } from 'src/decorators/public.decorator';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from 'src/enum/role.enum';
+import { LoggerMiddleware } from 'src/utils/logger.service';
 
 @Controller('users')
 export class UsersController {
-    constructor(private userService: UsersService) {}
+    constructor(
+        private userService: UsersService,
+        private readonly logger: LoggerMiddleware,
+    ) {}
 
     @Get(':id')
     @Roles(Role.User)
@@ -49,6 +55,7 @@ export class UsersController {
     @Get('')
     @Roles(Role.User)
     async getUsers(@Req() req: Request, @Res() res: Response) {
+        this.logger.log('Test Logger');
         try {
             const userList = await this.userService.fetchUser();
             res.status(HttpStatus.OK).json(userList);
@@ -60,6 +67,7 @@ export class UsersController {
 
     @Public()
     @Post()
+    @UsePipes(ValidationPipe)
     createUser(@Body() createUserDto: CreateUserDto) {
         return this.userService.createUser(createUserDto);
     }
