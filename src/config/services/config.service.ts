@@ -32,4 +32,11 @@ export class ConfigService {
     } {
         return this.config.database;
     }
+
+    get trotlle(): {
+        ttl: number;
+        limit: number;
+    } {
+        return this.config.throttle;
+    }
 }

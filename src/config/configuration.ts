@@ -9,6 +9,10 @@ const productionConfig = () => ({
     },
     jwt: process.env.PROD_JWT_SECRET,
     salt: parseInt(process.env.PROD_SALT) || 10,
+    throttle: {
+        ttl: parseInt(process.env.THROTTLE_TTL),
+        limit: parseInt(process.env.THROTTLE_LIMIT),
+    },
 });
 
 const developmentConfig = () => ({
@@ -22,6 +26,10 @@ const developmentConfig = () => ({
     },
     jwt: process.env.DEV_JWT_SECRET,
     salt: parseInt(process.env.DEV_SALT) || 10,
+    throttle: {
+        ttl: parseInt(process.env.THROTTLE_TTL),
+        limit: parseInt(process.env.THROTTLE_LIMIT),
+    },
 });
 
 export { productionConfig, developmentConfig };

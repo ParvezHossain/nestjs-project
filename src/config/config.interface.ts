@@ -9,4 +9,8 @@ export interface AppConfig {
     };
     jwt: string;
     salt: number;
+    throttle: {
+        ttl: number;
+        limit: number;
+    };
 }

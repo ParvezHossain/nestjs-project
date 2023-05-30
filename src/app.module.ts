@@ -8,9 +8,17 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from './config/config.module';
 import { LoggerMiddleware } from './utils/logger.service';
 import { ConfigService } from './config/services/config.service';
+import { ThrottlerModule } from '@nestjs/throttler';
 @Module({
     imports: [
-        ConfigModule,
+        ThrottlerModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (configService: ConfigService) => ({
+                ttl: configService.trotlle.ttl,
+                limit: configService.trotlle.limit,
+            }),
+        }),
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
