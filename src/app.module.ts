@@ -8,21 +8,26 @@ import { User } from './typeorm/entities/User';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from './config/config.module';
+import { ConfigService } from './config/services/config.service';
 
 @Module({
     imports: [
-        TypeOrmModule.forRoot({
-            type: 'mysql',
-            host: 'localhost',
-            port: 3306,
-            username: 'root',
-            password: '',
-            database: 'laravel',
-            entities: [User],
-            synchronize: true,
-            autoLoadEntities: true,
-        }),
         ConfigModule,
+        TypeOrmModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService) => ({
+                type: 'mysql',
+                host: 'localhost',
+                port: 3306,
+                username: 'root',
+                password: '',
+                database: configService.database.name,
+                entities: [User],
+                synchronize: true,
+                autoLoadEntities: true,
+            }),
+        }),
         AuthModule,
         UsersModule,
     ],

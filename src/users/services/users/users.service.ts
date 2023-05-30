@@ -27,6 +27,8 @@ export class UsersService {
     }
     async createUser(userDetails: CreateUserParams) {
         const salt = this.configService.getSalt();
+        console.log('salt', salt);
+        
         const { password } = userDetails;
         const hash = await bcrypt.hash(password, salt);
         const newUser = this.userRepository.create({
