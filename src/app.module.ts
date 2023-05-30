@@ -23,7 +23,9 @@ import { ConfigService } from './config/services/config.service';
                 database: configService.database.name,
                 entities: [User],
                 synchronize: true,
-                autoLoadEntities: true,
+                extra: {
+                    connectionLimit: 10,
+                },
             }),
         }),
         AuthModule,
