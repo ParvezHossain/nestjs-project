@@ -12,6 +12,7 @@ import {
     HttpStatus,
     UsePipes,
     ValidationPipe,
+    Header,
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
 import { UpdateUserDto } from 'src/users/dtos/UpdateUser.dto';
@@ -54,6 +55,7 @@ export class UsersController {
 
     @Get('')
     @Roles(Role.User)
+    @Header('Cache-Control', 'none')
     async getUsers(@Req() req: Request, @Res() res: Response) {
         this.logger.log('Test Logger');
         try {

@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 import helmet from 'helmet';
+import { ConfigService } from './config/services/config.service';
 
 async function bootstrap() {
     dotenv.config({
@@ -29,7 +30,7 @@ async function bootstrap() {
             },
         }),
     );
-    // app.setGlobalPrefix('api');
-    await app.listen(3000);
+    const configService = new ConfigService();
+    await app.listen(configService.getPort());
 }
 bootstrap();

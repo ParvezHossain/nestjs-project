@@ -9,7 +9,7 @@ import {
 export class CreateUserDto {
     @IsString()
     @IsNotEmpty()
-    @MinLength(10, {
+    @MinLength(5, {
         message: 'Username is too short',
     })
     @MaxLength(50, {

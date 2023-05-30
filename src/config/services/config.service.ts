@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import configuration from 'src/config/configuration';
+import { productionConfig, developmentConfig } from 'src/config/configuration';
 import { AppConfig } from '../config.interface';
 
 @Injectable()
 export class ConfigService {
     private readonly config: AppConfig;
-
     constructor() {
-        this.config = configuration();
+        this.config =
+            process.env.NODE_ENV === 'production'
+                ? productionConfig()
+                : developmentConfig();
     }
     getPort() {
         return this.config.port;

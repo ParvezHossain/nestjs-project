@@ -8,7 +8,6 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from './config/config.module';
 import { LoggerMiddleware } from './utils/logger.service';
 import { ConfigService } from './config/services/config.service';
-
 @Module({
     imports: [
         ConfigModule,
@@ -17,10 +16,10 @@ import { ConfigService } from './config/services/config.service';
             inject: [ConfigService],
             useFactory: async (configService: ConfigService) => ({
                 type: 'mysql',
-                host: 'localhost',
-                port: 3306,
-                username: 'root',
-                password: '',
+                host: configService.database.host,
+                port: configService.database.port,
+                username: configService.database.user,
+                password: configService.database.password,
                 database: configService.database.name,
                 entities: [User],
                 synchronize: true,
