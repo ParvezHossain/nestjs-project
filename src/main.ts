@@ -9,7 +9,9 @@ async function bootstrap() {
     dotenv.config({
         path: path.resolve(__dirname, '../src/', 'config', '.env'),
     });
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, {
+        cors: true,
+    });
     app.use(
         helmet({
             crossOriginEmbedderPolicy: false,
