@@ -14,13 +14,13 @@ import {
     ValidationPipe,
     Header,
 } from '@nestjs/common';
-import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
-import { UpdateUserDto } from 'src/users/dtos/UpdateUser.dto';
-import { UsersService } from 'src/users/services/users/users.service';
-import { Request, Response } from 'express';
 import { Public } from 'src/decorators/public.decorator';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from 'src/enum/role.enum';
+import { Request, Response } from 'express';
+import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
+import { UpdateUserDto } from 'src/users/dtos/UpdateUser.dto';
+import { UsersService } from 'src/users/services/users/users.service';
 import { LoggerMiddleware } from 'src/utils/logger.service';
 
 @Controller('users')
@@ -46,7 +46,6 @@ export class UsersController {
                 });
             }
         } catch (error) {
-            console.error('Error fetching user:', error);
             res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
                 message: 'Internal Server Error',
             });
@@ -62,7 +61,6 @@ export class UsersController {
             const userList = await this.userService.fetchUser();
             res.status(HttpStatus.OK).json(userList);
         } catch (error) {
-            console.error('Error fetching users:', error);
             res.status(HttpStatus.INTERNAL_SERVER_ERROR).json([]);
         }
     }
@@ -70,7 +68,7 @@ export class UsersController {
     @Public()
     @Post()
     @UsePipes(ValidationPipe)
-    createUser(@Body() createUserDto: CreateUserDto) {
+    async createUser(@Body() createUserDto: CreateUserDto) {
         return this.userService.createUser(createUserDto);
     }
 

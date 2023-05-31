@@ -8,10 +8,10 @@ import {
     Res,
     UseGuards,
 } from '@nestjs/common';
-import { AuthService } from '../services/auth/auth.service';
 import { Response } from 'express';
-import { AuthGuard } from '../auth.guard';
+import { AuthService } from '../services/auth/auth.service';
 import { Public } from 'src/decorators/public.decorator';
+import { AuthGuard } from '../auth.guard';
 
 @Controller('auth')
 export class AuthController {

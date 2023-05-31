@@ -4,10 +4,11 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './typeorm/entities/User';
 import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
+// import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from './config/config.module';
 import { LoggerMiddleware } from './utils/logger.service';
 import { ConfigService } from './config/services/config.service';
+import { AuthModule } from './auth/auth.module';
 @Module({
     imports: [
         ConfigModule,

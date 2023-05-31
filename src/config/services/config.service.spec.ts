@@ -15,4 +15,9 @@ describe('ConfigService', () => {
     it('should be defined', () => {
         expect(service).toBeDefined();
     });
+    it('should get the correct value for the "database.host" configuration', () => {
+        const expectedHost = 'localhost';
+        const actualHost = service.database.host;
+        expect(actualHost).toEqual(expectedHost);
+    });
 });
