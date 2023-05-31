@@ -5,6 +5,7 @@ import { HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { LoggerMiddleware } from '../../../../src/utils/logger.service';
 import { ConfigService } from '../../../../src/config/services/config.service';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 describe('UsersController', () => {
     let controller: UsersController;
@@ -29,7 +30,10 @@ describe('UsersController', () => {
                     },
                 },
             ],
-        }).compile();
+        })
+            .overrideGuard(ThrottlerGuard)
+            .useValue({ canActivate: () => true })
+            .compile();
 
         controller = module.get<UsersController>(UsersController);
         userService = module.get<UsersService>(UsersService);
