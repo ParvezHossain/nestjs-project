@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 import helmet from 'helmet';
 import { ConfigService } from './config/services/config.service';
+import * as csurf from 'csurf';
 
 async function bootstrap() {
     dotenv.config({
@@ -12,6 +13,7 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
         cors: true,
     });
+    app.use(csurf());
     app.use(
         helmet({
             crossOriginEmbedderPolicy: false,
