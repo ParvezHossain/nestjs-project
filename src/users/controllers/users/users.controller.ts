@@ -13,6 +13,7 @@ import {
     UsePipes,
     ValidationPipe,
     Header,
+    UseGuards,
 } from '@nestjs/common';
 import { Public } from 'src/decorators/public.decorator';
 import { Roles } from 'src/decorators/roles.decorator';
@@ -22,8 +23,13 @@ import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
 import { UpdateUserDto } from 'src/users/dtos/UpdateUser.dto';
 import { UsersService } from 'src/users/services/users/users.service';
 import { LoggerMiddleware } from 'src/utils/logger.service';
+import { SkipThrottle, Throttle, ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('users')
+// This controller is now eligible for rate limiting as the Throttle will be applied to it.
+@UseGuards(ThrottlerGuard)
+// This applies to skip the rate limiting to all api of this controller
+@SkipThrottle()
 export class UsersController {
     constructor(
         private userService: UsersService,
@@ -55,6 +61,9 @@ export class UsersController {
     @Get('')
     @Roles(Role.User)
     @Header('Cache-Control', 'none')
+    @SkipThrottle(false)
+    // Override default configuration for Rate limiting and duration.
+    @Throttle(3, 60)
     async getUsers(@Req() req: Request, @Res() res: Response) {
         this.logger.log('Test Logger');
         try {
@@ -68,7 +77,9 @@ export class UsersController {
     @Public()
     @Post()
     @UsePipes(ValidationPipe)
-    async createUser(@Body() createUserDto: CreateUserDto) {
+    // This will override the throttling configuration and will appy the rate limit
+    @SkipThrottle(false)
+    createUser(@Body() createUserDto: CreateUserDto) {
         return this.userService.createUser(createUserDto);
     }
 
