@@ -37,7 +37,7 @@ export class UsersController {
     ) {}
 
     @Get(':id')
-    @Roles(Role.User)
+    @Roles(Role.Admin)
     async getUserById(
         @Param('id', ParseIntPipe) id: number,
         @Res() res: Response,
@@ -59,7 +59,7 @@ export class UsersController {
     }
 
     @Get('')
-    @Roles(Role.User)
+    @Roles(Role.Admin)
     @Header('Cache-Control', 'none')
     @SkipThrottle(false)
     // Override default configuration for Rate limiting and duration.

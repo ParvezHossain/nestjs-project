@@ -13,9 +13,14 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
         cors: true,
     });
-    app.use(csurf());
+    // app.use(csurf());
     app.use(
         helmet({
+            hsts: {
+                maxAge: 31536000,
+                includeSubDomains: true,
+                preload: true,
+            },
             crossOriginEmbedderPolicy: false,
             contentSecurityPolicy: {
                 directives: {

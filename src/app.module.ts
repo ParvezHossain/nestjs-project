@@ -10,6 +10,11 @@ import { LoggerMiddleware } from './utils/logger.service';
 import { ConfigService } from './config/services/config.service';
 import { AuthModule } from './auth/auth.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import * as compression from 'compression';
+import { XssProtectionMiddleware } from './utils/middlewares/xssProtection.middleware';
+import { XPermittedCrossDomainPoliciesMiddleware } from './utils/middlewares/xPermittedCrossDomainPolicies.middleware';
+import { XDownloadOptionsMiddleware } from './utils/middlewares/xDownloadOptions.middleware';
+import { XDnsPrefetchControlMiddleware } from './utils/middlewares/xDnsPrefetchControl.middleware';
 @Module({
     imports: [
         ThrottlerModule.forRootAsync({
@@ -47,5 +52,12 @@ export class AppModule {
     constructor(private readonly logger: LoggerMiddleware) {}
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(this.logger.use.bind(this.logger)).forRoutes('*');
+        consumer
+            .apply(compression({ level: 6, encodings: ['gzip', 'deflate'] }))
+            .forRoutes('*');
+        consumer.apply(XssProtectionMiddleware).forRoutes('*');
+        consumer.apply(XPermittedCrossDomainPoliciesMiddleware).forRoutes('*');
+        consumer.apply(XDownloadOptionsMiddleware).forRoutes('*');
+        consumer.apply(XDnsPrefetchControlMiddleware).forRoutes('*');
     }
 }
