@@ -5,6 +5,7 @@ import * as path from 'path';
 import helmet from 'helmet';
 import { ConfigService } from './config/services/config.service';
 import * as csurf from 'csurf';
+import { VERSION_NEUTRAL, VersioningType } from '@nestjs/common';
 
 async function bootstrap() {
     dotenv.config({
@@ -12,6 +13,11 @@ async function bootstrap() {
     });
     const app = await NestFactory.create(AppModule, {
         cors: true,
+    });
+    app.setGlobalPrefix('api');
+    app.enableVersioning({
+        type: VersioningType.URI,
+        defaultVersion: VERSION_NEUTRAL,
     });
     // app.use(csurf());
     app.use(

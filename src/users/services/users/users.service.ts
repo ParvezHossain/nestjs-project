@@ -25,6 +25,11 @@ export class UsersService {
     fetchUser() {
         return this.userRepository.find();
     }
+    fetchUserV2() {
+        return this.userRepository.find({
+            select: ['id', 'username', 'email', 'role', 'createdAt'],
+        });
+    }
     async createUser(userDetails: CreateUserParams) {
         const salt = this.configService.getSalt();
         const { password } = userDetails;

@@ -14,6 +14,7 @@ import {
     ValidationPipe,
     Header,
     UseGuards,
+    Version,
 } from '@nestjs/common';
 import { Public } from 'src/decorators/public.decorator';
 import { Roles } from 'src/decorators/roles.decorator';
@@ -24,6 +25,8 @@ import { UpdateUserDto } from 'src/users/dtos/UpdateUser.dto';
 import { UsersService } from 'src/users/services/users/users.service';
 import { LoggerMiddleware } from 'src/utils/logger.service';
 import { SkipThrottle, Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { UnsupportedVersionException } from 'src/utils/exceptions/unsupportedVersionException';
+import { User } from 'src/typeorm/entities/User';
 
 @Controller('users')
 // This controller is now eligible for rate limiting as the Throttle will be applied to it.
@@ -59,6 +62,7 @@ export class UsersController {
     }
 
     @Get('')
+    @Version(['1', '2'])
     @Roles(Role.Admin)
     @Header('Cache-Control', 'none')
     @SkipThrottle(false)
@@ -67,7 +71,16 @@ export class UsersController {
     async getUsers(@Req() req: Request, @Res() res: Response) {
         this.logger.log('Test Logger');
         try {
-            const userList = await this.userService.fetchUser();
+            const version = req.path.split('/')[2];
+            let userList: User[] = [];
+            if (version === 'v1') {
+                userList = await this.userService.fetchUser();
+            } else if (version === 'v2') {
+                userList = await this.userService.fetchUserV2();
+            } else {
+                // TODO: This is useless right now, before reaching here, it will throw 404 error.
+                throw new UnsupportedVersionException();
+            }
             res.status(HttpStatus.OK).json(userList);
         } catch (error) {
             res.status(HttpStatus.INTERNAL_SERVER_ERROR).json([]);
