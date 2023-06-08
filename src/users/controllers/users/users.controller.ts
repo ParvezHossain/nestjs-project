@@ -72,6 +72,7 @@ export class UsersController {
         this.logger.log('Test Logger');
         try {
             const version = req.path.split('/')[2];
+            // const [, , version] = req.path.split('/');
             let userList: User[] = [];
             if (version === 'v1') {
                 userList = await this.userService.fetchUser();

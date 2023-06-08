@@ -15,8 +15,12 @@ import { XssProtectionMiddleware } from './utils/middlewares/xssProtection.middl
 import { XPermittedCrossDomainPoliciesMiddleware } from './utils/middlewares/xPermittedCrossDomainPolicies.middleware';
 import { XDownloadOptionsMiddleware } from './utils/middlewares/xDownloadOptions.middleware';
 import { XDnsPrefetchControlMiddleware } from './utils/middlewares/xDnsPrefetchControl.middleware';
+import { WeatherModule } from './weather/weather.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { Weather } from './typeorm/entities/Weather';
 @Module({
     imports: [
+        ScheduleModule.forRoot(),
         ThrottlerModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
@@ -35,7 +39,7 @@ import { XDnsPrefetchControlMiddleware } from './utils/middlewares/xDnsPrefetchC
                 username: configService.database.user,
                 password: configService.database.password,
                 database: configService.database.name,
-                entities: [User],
+                entities: [User, Weather],
                 synchronize: true,
                 extra: {
                     connectionLimit: 10,
@@ -44,6 +48,7 @@ import { XDnsPrefetchControlMiddleware } from './utils/middlewares/xDnsPrefetchC
         }),
         AuthModule,
         UsersModule,
+        WeatherModule,
     ],
     controllers: [AppController],
     providers: [AppService, LoggerMiddleware],
