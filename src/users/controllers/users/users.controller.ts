@@ -51,7 +51,7 @@ export class UsersController {
         private userService: UsersService,
         private readonly logger: LoggerMiddleware,
         @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    ) { }
+    ) {}
 
     @Get(':id')
     @Roles(Role.Admin)
@@ -90,7 +90,9 @@ export class UsersController {
             // const [, , version] = req.path.split('/');
             let userList: User[] = [];
             if (version === 'v1') {
-                const cachedUsers = await this.cacheManager.get<User[]>('users');
+                const cachedUsers = await this.cacheManager.get<User[]>(
+                    'users',
+                );
                 if (cachedUsers) {
                     userList = cachedUsers;
                 } else {

@@ -21,6 +21,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { Weather } from './typeorm/entities/Weather';
 @Module({
     imports: [
+        ScheduleModule.forRoot(),
         CacheModule.registerAsync({
             isGlobal: true,
             imports: [ConfigModule],
@@ -30,7 +31,6 @@ import { Weather } from './typeorm/entities/Weather';
                 max: configService.cache.max,
             }),
         }),
-        ScheduleModule.forRoot(),
         ThrottlerModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
