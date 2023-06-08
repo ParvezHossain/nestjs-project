@@ -14,6 +14,7 @@ import {
     ValidationPipe,
     Header,
     UseGuards,
+    Inject,
 } from '@nestjs/common';
 import { Public } from 'src/decorators/public.decorator';
 import { Roles } from 'src/decorators/roles.decorator';
@@ -24,6 +25,9 @@ import { UpdateUserDto } from 'src/users/dtos/UpdateUser.dto';
 import { UsersService } from 'src/users/services/users/users.service';
 import { LoggerMiddleware } from 'src/utils/logger.service';
 import { SkipThrottle, Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { User } from 'src/typeorm/entities/User';
+import { Cache } from 'cache-manager';
 
 @Controller('users')
 // This controller is now eligible for rate limiting as the Throttle will be applied to it.
@@ -34,6 +38,7 @@ export class UsersController {
     constructor(
         private userService: UsersService,
         private readonly logger: LoggerMiddleware,
+        @Inject(CACHE_MANAGER) private cacheManager: Cache,
     ) {}
 
     @Get(':id')
@@ -67,8 +72,15 @@ export class UsersController {
     async getUsers(@Req() req: Request, @Res() res: Response) {
         this.logger.log('Test Logger');
         try {
-            const userList = await this.userService.fetchUser();
-            res.status(HttpStatus.OK).json(userList);
+            const cachedUsers = await this.cacheManager.get<User[]>('users');
+            if (cachedUsers) {
+                console.log('from cached');
+                res.status(HttpStatus.OK).json(cachedUsers);
+            } else {
+                const userList = await this.userService.fetchUser();
+                await this.cacheManager.set('users', userList);
+                res.status(HttpStatus.OK).json(userList);
+            }
         } catch (error) {
             res.status(HttpStatus.INTERNAL_SERVER_ERROR).json([]);
         }
