@@ -15,11 +15,21 @@ import { XssProtectionMiddleware } from './utils/middlewares/xssProtection.middl
 import { XPermittedCrossDomainPoliciesMiddleware } from './utils/middlewares/xPermittedCrossDomainPolicies.middleware';
 import { XDownloadOptionsMiddleware } from './utils/middlewares/xDownloadOptions.middleware';
 import { XDnsPrefetchControlMiddleware } from './utils/middlewares/xDnsPrefetchControl.middleware';
+import { CacheModule } from '@nestjs/cache-manager';
 import { WeatherModule } from './weather/weather.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { Weather } from './typeorm/entities/Weather';
 @Module({
     imports: [
+        CacheModule.registerAsync({
+            isGlobal: true,
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (configService: ConfigService) => ({
+                ttl: configService.cache.ttl,
+                max: configService.cache.max,
+            }),
+        }),
         ScheduleModule.forRoot(),
         ThrottlerModule.forRootAsync({
             imports: [ConfigModule],
@@ -54,7 +64,7 @@ import { Weather } from './typeorm/entities/Weather';
     providers: [AppService, LoggerMiddleware],
 })
 export class AppModule {
-    constructor(private readonly logger: LoggerMiddleware) {}
+    constructor(private readonly logger: LoggerMiddleware) { }
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(this.logger.use.bind(this.logger)).forRoutes('*');
         consumer

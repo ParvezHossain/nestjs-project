@@ -39,4 +39,10 @@ export class ConfigService {
     } {
         return this.config.throttle;
     }
+    get cache(): {
+        ttl: number;
+        max: number;
+    } {
+        return this.config.cache;
+    }
 }

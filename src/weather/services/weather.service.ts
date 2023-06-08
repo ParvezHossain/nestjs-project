@@ -35,6 +35,7 @@ export class WeatherService {
             weather.wind_deg = response.data.wind.wind_deg;
             weather.clouds = response.data.clouds.all;
             weather.dt = new Date(response.data.dt * 1000);
+            weather.createdAt = new Date();
 
             await this.weatherRepository.save(weather);
 

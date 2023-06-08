@@ -13,6 +13,10 @@ const productionConfig = () => ({
         ttl: parseInt(process.env.THROTTLE_TTL),
         limit: parseInt(process.env.THROTTLE_LIMIT),
     },
+    cache: {
+        ttl: parseInt(process.env.CACHE_TTL),
+        max: parseInt(process.env.CACHE_MAX),
+    },
 });
 
 const developmentConfig = () => ({
@@ -29,6 +33,10 @@ const developmentConfig = () => ({
     throttle: {
         ttl: parseInt(process.env.THROTTLE_TTL),
         limit: parseInt(process.env.THROTTLE_LIMIT),
+    },
+    cache: {
+        ttl: parseInt(process.env.CACHE_TTL),
+        max: parseInt(process.env.CACHE_MAX),
     },
 });
 

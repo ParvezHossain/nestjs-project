@@ -15,6 +15,7 @@ import {
     Header,
     UseGuards,
     Version,
+    Inject,
 } from '@nestjs/common';
 import { Public } from 'src/decorators/public.decorator';
 import { Roles } from 'src/decorators/roles.decorator';
@@ -27,6 +28,8 @@ import { LoggerMiddleware } from 'src/utils/logger.service';
 import { SkipThrottle, Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { UnsupportedVersionException } from 'src/utils/exceptions/unsupportedVersionException';
 import { User } from 'src/typeorm/entities/User';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Controller('users')
 // This controller is now eligible for rate limiting as the Throttle will be applied to it.
@@ -37,6 +40,7 @@ export class UsersController {
     constructor(
         private userService: UsersService,
         private readonly logger: LoggerMiddleware,
+        @Inject(CACHE_MANAGER) private cacheManager: Cache,
     ) {}
 
     @Get(':id')
@@ -75,7 +79,13 @@ export class UsersController {
             // const [, , version] = req.path.split('/');
             let userList: User[] = [];
             if (version === 'v1') {
-                userList = await this.userService.fetchUser();
+                const cachedUsers = await this.cacheManager.get<User[]>('users');
+                if (cachedUsers) {
+                    userList = cachedUsers;
+                } else {
+                    userList = await this.userService.fetchUser();
+                    await this.cacheManager.set('users', userList);
+                }
             } else if (version === 'v2') {
                 userList = await this.userService.fetchUserV2();
             } else {

@@ -13,4 +13,8 @@ export interface AppConfig {
         ttl: number;
         limit: number;
     };
+    cache: {
+        ttl: number;
+        max: number;
+    };
 }
