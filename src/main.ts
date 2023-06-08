@@ -5,6 +5,11 @@ import * as path from 'path';
 import helmet from 'helmet';
 import { ConfigService } from './config/services/config.service';
 import * as csurf from 'csurf';
+import {
+    DocumentBuilder,
+    SwaggerDocumentOptions,
+    SwaggerModule,
+} from '@nestjs/swagger';
 
 async function bootstrap() {
     dotenv.config({
@@ -13,6 +18,24 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
         cors: true,
     });
+
+    // Swagger Documentation
+
+    const swaggerConfig = new DocumentBuilder()
+        .setTitle('Swagger Documentation')
+        .setDescription('This is all about Documentation')
+        .setVersion('1.0')
+        .addBearerAuth() // Enable JWT authentication
+        .addTag('cats')
+        .build();
+
+    const options: SwaggerDocumentOptions = {
+        operationIdFactory: (controllerKey: string, methodKey: string) =>
+            methodKey,
+    };
+
+    const document = SwaggerModule.createDocument(app, swaggerConfig, options);
+    SwaggerModule.setup('api', app, document);
     // app.use(csurf());
     app.use(
         helmet({
