@@ -30,7 +30,17 @@ import { UnsupportedVersionException } from 'src/utils/exceptions/unsupportedVer
 import { User } from 'src/typeorm/entities/User';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import {
+    ApiBearerAuth,
+    ApiTags,
+    ApiOperation,
+    ApiResponse,
+    ApiBody,
+} from '@nestjs/swagger';
+import { string } from '@hapi/joi';
 
+@ApiBearerAuth()
+@ApiTags('users')
 @Controller('users')
 // This controller is now eligible for rate limiting as the Throttle will be applied to it.
 @UseGuards(ThrottlerGuard)
@@ -72,6 +82,7 @@ export class UsersController {
     @SkipThrottle(false)
     // Override default configuration for Rate limiting and duration.
     @Throttle(3, 60)
+    @ApiOperation({ summary: 'Get the user list' })
     async getUsers(@Req() req: Request, @Res() res: Response) {
         this.logger.log('Test Logger');
         try {
@@ -79,7 +90,9 @@ export class UsersController {
             // const [, , version] = req.path.split('/');
             let userList: User[] = [];
             if (version === 'v1') {
-                const cachedUsers = await this.cacheManager.get<User[]>('users');
+                const cachedUsers = await this.cacheManager.get<User[]>(
+                    'users',
+                );
                 if (cachedUsers) {
                     userList = cachedUsers;
                 } else {
@@ -103,6 +116,19 @@ export class UsersController {
     @UsePipes(ValidationPipe)
     // This will override the throttling configuration and will appy the rate limit
     @SkipThrottle(false)
+    @ApiOperation({ summary: 'Create new user' })
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
+    @ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                username: { type: 'string' },
+                password: { type: 'string' },
+                email: { type: 'string' },
+                role: { type: 'string' },
+            },
+        },
+    })
     createUser(@Body() createUserDto: CreateUserDto) {
         return this.userService.createUser(createUserDto);
     }
