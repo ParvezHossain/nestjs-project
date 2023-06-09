@@ -1,6 +1,30 @@
+import {
+    IsEmail,
+    IsNotEmpty,
+    IsString,
+    MaxLength,
+    MinLength,
+} from 'class-validator';
+
 export class UpdateUserDto {
+    @IsString()
+    @IsNotEmpty()
+    @MinLength(5, {
+        message: 'Username is too short',
+    })
+    @MaxLength(50, {
+        message: 'Username is too long',
+    })
     username: string;
+
+    @IsString()
+    @IsNotEmpty()
     password: string;
+
+    @IsEmail()
     email: string;
+
+    @IsString()
+    @IsNotEmpty()
     role: string;
 }

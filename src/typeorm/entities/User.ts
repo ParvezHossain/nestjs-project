@@ -1,6 +1,7 @@
 import { Transform } from 'class-transformer';
 import { IsEmail } from 'class-validator';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Blog } from 'src/blog/entities/blog.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'users' })
 export class User {
@@ -20,6 +21,9 @@ export class User {
 
     @Column({ nullable: false, default: 'user' })
     role: string;
+
+    @OneToMany(() => Blog, (blog) => blog.createdBy, { cascade: true })
+    blogs: Blog[];
 
     @Column()
     createdAt: Date;

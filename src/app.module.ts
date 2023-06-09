@@ -19,6 +19,8 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { WeatherModule } from './weather/weather.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { Weather } from './typeorm/entities/Weather';
+import { BlogModule } from './blog/blog.module';
+import { Blog } from './blog/entities/blog.entity';
 @Module({
     imports: [
         ScheduleModule.forRoot(),
@@ -49,7 +51,7 @@ import { Weather } from './typeorm/entities/Weather';
                 username: configService.database.user,
                 password: configService.database.password,
                 database: configService.database.name,
-                entities: [User, Weather],
+                entities: [User, Weather, Blog],
                 synchronize: true,
                 extra: {
                     connectionLimit: 10,
@@ -59,12 +61,13 @@ import { Weather } from './typeorm/entities/Weather';
         AuthModule,
         UsersModule,
         WeatherModule,
+        BlogModule,
     ],
     controllers: [AppController],
     providers: [AppService, LoggerMiddleware],
 })
 export class AppModule {
-    constructor(private readonly logger: LoggerMiddleware) { }
+    constructor(private readonly logger: LoggerMiddleware) {}
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(this.logger.use.bind(this.logger)).forRoutes('*');
         consumer
