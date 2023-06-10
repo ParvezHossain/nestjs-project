@@ -3,18 +3,18 @@ import { BlogController } from './blog.controller';
 import { BlogService } from './blog.service';
 
 describe('BlogController', () => {
-  let controller: BlogController;
+    let controller: BlogController;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [BlogController],
-      providers: [BlogService],
-    }).compile();
+    beforeEach(async () => {
+        const module: TestingModule = await Test.createTestingModule({
+            controllers: [BlogController],
+            providers: [BlogService],
+        }).compile();
 
-    controller = module.get<BlogController>(BlogController);
-  });
+        controller = module.get<BlogController>(BlogController);
+    });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
+    it('should be defined', () => {
+        expect(controller).toBeDefined();
+    });
 });
