@@ -39,8 +39,9 @@ export class UsersService {
             password: hash,
             createdAt: new Date(),
         });
+        await this.userRepository.save(newUser);
         delete newUser.password;
-        return this.userRepository.save(newUser);
+        return newUser;
     }
     updateUser(id: number, updateUserDetails: UpdateUserParams) {
         return this.userRepository.update({ id }, { ...updateUserDetails });
