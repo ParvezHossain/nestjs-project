@@ -9,6 +9,8 @@ export class CreateBlogDto {
     @IsString()
     content: string;
 
+    image: string;
+
     @IsNotEmpty()
     createdBy: number;
 }

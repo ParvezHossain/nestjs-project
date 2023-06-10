@@ -22,6 +22,9 @@ export class Blog {
     @JoinColumn({ name: 'createdBy' })
     createdBy: User;
 
+    @Column({ nullable: true })
+    image: string;
+
     @Column({ default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
 

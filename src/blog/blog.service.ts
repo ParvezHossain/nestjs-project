@@ -25,12 +25,18 @@ export class BlogService {
         return blog;
     }
 
-    async create(user: User, createBlogDto: CreateBlogDto): Promise<Blog> {
+    async create(
+        user: User,
+        createBlogDto: CreateBlogDto,
+        image: any,
+    ): Promise<Blog> {
+        console.log(image);
         const { title, content } = createBlogDto;
         const blog = this.blogRepository.create({
             title,
             content,
             createdBy: user,
+            image: image.filename,
         });
         return this.blogRepository.save(blog);
     }
