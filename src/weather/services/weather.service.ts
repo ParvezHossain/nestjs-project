@@ -38,7 +38,6 @@ export class WeatherService {
             weather.createdAt = new Date();
 
             await this.weatherRepository.save(weather);
-
         } catch (error) {
             throw new Error('Failed to create user');
         }

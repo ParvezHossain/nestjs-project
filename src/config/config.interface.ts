@@ -17,4 +17,8 @@ export interface AppConfig {
         ttl: number;
         max: number;
     };
+    redis: {
+        host: string;
+        port: number;
+    };
 }

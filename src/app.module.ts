@@ -19,9 +19,25 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { WeatherModule } from './weather/weather.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { Weather } from './typeorm/entities/Weather';
+import { BullModule } from '@nestjs/bull';
+import { TRANSCODE_QUEUE } from './utils/constants';
+import { TranscodeConsumer } from './utils/consumers/transcode.consumer';
 @Module({
     imports: [
         ScheduleModule.forRoot(),
+        BullModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService) => ({
+                redis: {
+                    host: configService.redis.host,
+                    port: configService.redis.port,
+                },
+            }),
+        }),
+        BullModule.registerQueue({
+            name: TRANSCODE_QUEUE,
+        }),
         CacheModule.registerAsync({
             isGlobal: true,
             imports: [ConfigModule],
@@ -61,10 +77,10 @@ import { Weather } from './typeorm/entities/Weather';
         WeatherModule,
     ],
     controllers: [AppController],
-    providers: [AppService, LoggerMiddleware],
+    providers: [AppService, LoggerMiddleware, TranscodeConsumer],
 })
 export class AppModule {
-    constructor(private readonly logger: LoggerMiddleware) { }
+    constructor(private readonly logger: LoggerMiddleware) {}
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(this.logger.use.bind(this.logger)).forRoutes('*');
         consumer
