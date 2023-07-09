@@ -22,6 +22,8 @@ import { Weather } from './typeorm/entities/Weather';
 import { BullModule } from '@nestjs/bull';
 import { TRANSCODE_QUEUE } from './utils/constants';
 import { TranscodeConsumer } from './utils/consumers/transcode.consumer';
+import { BlogModule } from './blog/blog.module';
+import { Blog } from './blog/entities/blog.entity';
 @Module({
     imports: [
         ScheduleModule.forRoot(),
@@ -65,7 +67,7 @@ import { TranscodeConsumer } from './utils/consumers/transcode.consumer';
                 username: configService.database.user,
                 password: configService.database.password,
                 database: configService.database.name,
-                entities: [User, Weather],
+                entities: [User, Weather, Blog],
                 synchronize: true,
                 extra: {
                     connectionLimit: 10,
@@ -75,6 +77,7 @@ import { TranscodeConsumer } from './utils/consumers/transcode.consumer';
         AuthModule,
         UsersModule,
         WeatherModule,
+        BlogModule,
     ],
     controllers: [AppController],
     providers: [AppService, LoggerMiddleware, TranscodeConsumer],

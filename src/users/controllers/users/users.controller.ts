@@ -40,7 +40,7 @@ import {
 import { string } from '@hapi/joi';
 
 @ApiBearerAuth()
-@ApiTags('users')
+@ApiTags('Users')
 @Controller('users')
 // This controller is now eligible for rate limiting as the Throttle will be applied to it.
 @UseGuards(ThrottlerGuard)
@@ -53,31 +53,35 @@ export class UsersController {
         @Inject(CACHE_MANAGER) private cacheManager: Cache,
     ) {}
 
-    @Get(':id')
-    @Roles(Role.Admin)
-    async getUserById(
-        @Param('id', ParseIntPipe) id: number,
-        @Res() res: Response,
-    ) {
-        try {
-            const user = await this.userService.getUserById(id);
-            if (user) {
-                res.status(HttpStatus.OK).json(user);
-            } else {
-                res.status(HttpStatus.NOT_FOUND).json({
-                    message: 'User not found',
-                });
-            }
-        } catch (error) {
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-                message: 'Internal Server Error',
-            });
-        }
+    @Public()
+    @Post()
+    @UsePipes(new ValidationPipe({ transform: true }))
+    // This will override the throttling configuration and will appy the rate limit
+    @SkipThrottle(false)
+    @ApiOperation({ summary: 'Create new user' })
+    @ApiResponse({ status: HttpStatus.CREATED, description: 'User created.' })
+    @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
+    // @ApiBody({
+    //     schema: {
+    //         type: 'object',
+    //         properties: {
+    //             username: { type: 'string' },
+    //             password: { type: 'string' },
+    //             email: { type: 'string' },
+    //             role: { type: 'string' },
+    //         },
+    //     },
+    // })
+    @ApiBody({
+        type: User,
+    })
+    createUser(@Body() createUserDto: CreateUserDto) {
+        return this.userService.createUser(createUserDto);
     }
 
     @Get('')
     @Version(['1', '2'])
-    @Roles(Role.Admin)
+    // @Roles(Role.Admin, Role.Super)
     @Header('Cache-Control', 'none')
     @SkipThrottle(false)
     // Override default configuration for Rate limiting and duration.
@@ -111,13 +115,33 @@ export class UsersController {
         }
     }
 
-    @Public()
-    @Post()
-    @UsePipes(ValidationPipe)
-    // This will override the throttling configuration and will appy the rate limit
-    @SkipThrottle(false)
-    @ApiOperation({ summary: 'Create new user' })
-    @ApiResponse({ status: 403, description: 'Forbidden.' })
+    @Get(':id')
+    // @Roles(Role.Admin)
+    async getUserById(
+        @Param('id', ParseIntPipe) id: number,
+        @Res() res: Response,
+    ) {
+        try {
+            const user = await this.userService.getUserById(id);
+            if (user) {
+                res.status(HttpStatus.OK).json(user);
+            } else {
+                res.status(HttpStatus.NOT_FOUND).json({
+                    message: 'User not found',
+                });
+            }
+        } catch (error) {
+            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                message: 'Internal Server Error',
+            });
+        }
+    }
+
+    @Put(':id')
+    @Roles(Role.Admin, Role.Super)
+    @ApiOperation({ summary: 'Updated user' })
+    @ApiResponse({ status: HttpStatus.OK, description: 'User Updated.' })
+    @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
     @ApiBody({
         schema: {
             type: 'object',
@@ -129,12 +153,6 @@ export class UsersController {
             },
         },
     })
-    createUser(@Body() createUserDto: CreateUserDto) {
-        return this.userService.createUser(createUserDto);
-    }
-
-    @Put(':id')
-    @Roles(Role.Admin)
     async updateUserById(
         @Param('id', ParseIntPipe) id: number,
         @Body() updateUserDto: UpdateUserDto,
@@ -143,7 +161,17 @@ export class UsersController {
     }
 
     @Delete(':id')
-    @Roles(Role.Admin)
+    @Roles(Role.Super)
+    @ApiOperation({ summary: 'Delete a user' })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        description: 'User successfully deleted',
+    })
+    @ApiResponse({
+        status: HttpStatus.NO_CONTENT,
+        description: 'No Content to delete',
+    })
+    @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
     async deleteUserById(@Param('id', ParseIntPipe) id: number) {
         await this.userService.deleteUser(id);
     }
