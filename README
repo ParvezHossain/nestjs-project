@@ -1,8 +1,11 @@
 docker build -t docker-nestjs .
 
-docker run -itd --rm --name mysql_server --network node-api-network -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=laravel -p 3306:3306 -d mysql:8.0
+docker run -it --rm --name mysql_server --network node-api-network -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=laravel -p 3306:3306 -d mysql:8.0
 
 docker run -it --rm --name docker-nestjs --network node-api-network -p 3000:3000 docker-nestjs
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';
+
 
 
 docker rm -f $(docker ps -aq)
