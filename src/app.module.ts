@@ -19,11 +19,6 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { WeatherModule } from './weather/weather.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { Weather } from './typeorm/entities/Weather';
-import { BullModule } from '@nestjs/bull';
-import { TRANSCODE_QUEUE } from './utils/constants';
-import { TranscodeConsumer } from './utils/consumers/transcode.consumer';
-import { BlogModule } from './blog/blog.module';
-import { Blog } from './blog/entities/blog.entity';
 @Module({
     imports: [
         ScheduleModule.forRoot(),
