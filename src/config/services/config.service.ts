@@ -45,4 +45,10 @@ export class ConfigService {
     } {
         return this.config.cache;
     }
+    get redis(): {
+        host: string;
+        port: number;
+    } {
+        return this.config.redis;
+    }
 }

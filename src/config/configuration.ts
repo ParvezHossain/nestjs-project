@@ -17,6 +17,10 @@ const productionConfig = () => ({
         ttl: parseInt(process.env.CACHE_TTL),
         max: parseInt(process.env.CACHE_MAX),
     },
+    redis: {
+        host: process.env.REDIS_HOST,
+        port: parseInt(process.env.REDIS_PORT),
+    },
 });
 
 const developmentConfig = () => ({
@@ -37,6 +41,10 @@ const developmentConfig = () => ({
     cache: {
         ttl: parseInt(process.env.CACHE_TTL),
         max: parseInt(process.env.CACHE_MAX),
+    },
+    redis: {
+        host: process.env.REDIS_HOST,
+        port: parseInt(process.env.REDIS_PORT),
     },
 });
 

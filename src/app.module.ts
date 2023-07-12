@@ -19,11 +19,22 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { WeatherModule } from './weather/weather.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { Weather } from './typeorm/entities/Weather';
-import { BlogModule } from './blog/blog.module';
-import { Blog } from './blog/entities/blog.entity';
 @Module({
     imports: [
         ScheduleModule.forRoot(),
+        BullModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService) => ({
+                redis: {
+                    host: configService.redis.host,
+                    port: configService.redis.port,
+                },
+            }),
+        }),
+        BullModule.registerQueue({
+            name: TRANSCODE_QUEUE,
+        }),
         CacheModule.registerAsync({
             isGlobal: true,
             imports: [ConfigModule],
@@ -64,7 +75,7 @@ import { Blog } from './blog/entities/blog.entity';
         BlogModule,
     ],
     controllers: [AppController],
-    providers: [AppService, LoggerMiddleware],
+    providers: [AppService, LoggerMiddleware, TranscodeConsumer],
 })
 export class AppModule {
     constructor(private readonly logger: LoggerMiddleware) {}
