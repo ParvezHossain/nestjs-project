@@ -5,7 +5,7 @@ import { extname } from 'path';
 import { v4 as uuid } from 'uuid';
 
 // Multer configuration
-console.log('Path: ', process.env.MULTER_IMAGE_UPLOAD_DESTINATION);
+// console.log('Path: ', process.env.MULTER_IMAGE_UPLOAD_DESTINATION);
 export const multerConfig = {
     dest: 'src/resources/images',
 };
