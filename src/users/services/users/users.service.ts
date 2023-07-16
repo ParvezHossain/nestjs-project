@@ -43,8 +43,16 @@ export class UsersService {
         delete newUser.password;
         return newUser;
     }
-    updateUser(id: number, updateUserDetails: UpdateUserParams) {
-        return this.userRepository.update({ id }, { ...updateUserDetails });
+    async updateUser(id: number, updateUserDetails: UpdateUserParams) {
+        const salt = this.configService.getSalt();
+        const { password } = updateUserDetails;
+        const hash = await bcrypt.hash(password, salt);
+        await this.userRepository.update(
+            { id },
+            { ...updateUserDetails, password: hash },
+        );
+        delete updateUserDetails.password;
+        return updateUserDetails;
     }
     deleteUser(id: number) {
         return this.userRepository.delete(id);

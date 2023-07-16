@@ -40,4 +40,13 @@ export class WeatherService {
             throw new Error('Failed to insert weather data.');
         }
     }
+
+    async findAll(page = 1, limit = 20): Promise<Weather[]> {
+        const skip = (page - 1) * limit;
+        
+        return this.weatherRepository.find({
+            take: limit,
+            skip,
+        })
+    }
 }
