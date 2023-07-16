@@ -20,7 +20,6 @@ export class WeatherService {
                     'https://api.openweathermap.org/data/2.5/weather?lat=23.7104&lon=90.40744&appid=f91e39708043133797454089bbcaec35',
                 )
                 .toPromise();
-
             const weather = new Weather();
             weather.weather_type = response.data.weather[0].main;
             weather.icon = response.data.weather[0].icon;
@@ -31,15 +30,23 @@ export class WeatherService {
             weather.pressure = response.data.main.pressure;
             weather.humidity = response.data.main.humidity;
             weather.visibility = response.data.visibility;
-            weather.wind_speed = response.data.wind.wind_speed;
-            weather.wind_deg = response.data.wind.wind_deg;
+            weather.wind_speed = response.data.wind.speed;
+            weather.wind_deg = response.data.wind.deg;
             weather.clouds = response.data.clouds.all;
             weather.dt = new Date(response.data.dt * 1000);
             weather.createdAt = new Date();
-
             await this.weatherRepository.save(weather);
         } catch (error) {
-            throw new Error('Failed to create user');
+            throw new Error('Failed to insert weather data.');
         }
+    }
+
+    async findAll(page = 1, limit = 20): Promise<Weather[]> {
+        const skip = (page - 1) * limit;
+        
+        return this.weatherRepository.find({
+            take: limit,
+            skip,
+        })
     }
 }
