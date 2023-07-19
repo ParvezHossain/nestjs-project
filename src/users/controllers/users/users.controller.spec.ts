@@ -78,9 +78,7 @@ describe('UsersController', () => {
         });
         it('should return 500 status on error', async () => {
             const userId = 1;
-            jest.spyOn(userService, 'getUserById').mockRejectedValue(
-                new Error(),
-            );
+            jest.spyOn(userService, 'getUserById').mockRejectedValue(new Error());
             const res = {
                 status: jest.fn().mockReturnThis(),
                 json: jest.fn(),
@@ -88,9 +86,7 @@ describe('UsersController', () => {
 
             await controller.getUserById(userId, res);
             expect(userService.getUserById).toHaveBeenCalledWith(userId);
-            expect(res.status).toHaveBeenCalledWith(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-            );
+            expect(res.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
             expect(res.json).toHaveBeenCalledWith({
                 message: 'Internal Server Error',
             });
@@ -134,9 +130,7 @@ describe('UsersController', () => {
                     createdAt: new Date(),
                 },
             ];
-            jest.spyOn(userService, 'fetchUser').mockResolvedValue(
-                mockUserList as any,
-            );
+            jest.spyOn(userService, 'fetchUser').mockResolvedValue(mockUserList as any);
             // Create mock Request and Response objects
             const req: Request = {} as Request;
             const res: Response = {
@@ -156,9 +150,7 @@ describe('UsersController', () => {
 
         it('should handle errors and return an empty list with status 500', async () => {
             // Mock the fetchUser method of the usersService to throw an error
-            jest.spyOn(userService, 'fetchUser').mockRejectedValue(
-                new Error('Internal Server Error'),
-            );
+            jest.spyOn(userService, 'fetchUser').mockRejectedValue(new Error('Internal Server Error'));
             // Create mock Request and Response objects
             const req: Request = {} as Request;
             const res: Response = {
@@ -170,9 +162,7 @@ describe('UsersController', () => {
             await controller.getUsers(req, res);
 
             // Check that the response status is 500
-            expect(res.status).toHaveBeenCalledWith(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-            );
+            expect(res.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
 
             // Check that the response JSON is an empty list
             expect(res.json).toHaveBeenCalledWith([]);

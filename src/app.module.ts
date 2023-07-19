@@ -86,9 +86,7 @@ export class AppModule {
     constructor(private readonly logger: LoggerMiddleware) {}
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(this.logger.use.bind(this.logger)).forRoutes('*');
-        consumer
-            .apply(compression({ level: 6, encodings: ['gzip', 'deflate'] }))
-            .forRoutes('*');
+        consumer.apply(compression({ level: 6, encodings: ['gzip', 'deflate'] })).forRoutes('*');
         consumer.apply(XssProtectionMiddleware).forRoutes('*');
         consumer.apply(XPermittedCrossDomainPoliciesMiddleware).forRoutes('*');
         consumer.apply(XDownloadOptionsMiddleware).forRoutes('*');

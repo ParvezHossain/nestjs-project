@@ -23,13 +23,7 @@ export const multerOptions = {
             cb(null, true);
         } else {
             // Reject file
-            cb(
-                new HttpException(
-                    `Unsupported file type ${extname(file.originalname)}`,
-                    HttpStatus.BAD_REQUEST,
-                ),
-                false,
-            );
+            cb(new HttpException(`Unsupported file type ${extname(file.originalname)}`, HttpStatus.BAD_REQUEST), false);
         }
     },
     // Storage properties

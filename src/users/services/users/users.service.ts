@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserParams, UpdateUserParams } from 'src/utils/types';
 import { Repository } from 'typeorm';
@@ -39,18 +39,23 @@ export class UsersService {
             password: hash,
             createdAt: new Date(),
         });
-        await this.userRepository.save(newUser);
-        delete newUser.password;
-        return newUser;
+        try {
+            await this.userRepository.save(newUser);
+            delete newUser.password;
+            return newUser;
+        } catch (error) {
+            if (error.code === 'ER_DUP_ENTRY') {
+                throw new ConflictException('User with the same email / username already exists');
+            } else {
+                throw new InternalServerErrorException('Internal server error');
+            }
+        }
     }
     async updateUser(id: number, updateUserDetails: UpdateUserParams) {
         const salt = this.configService.getSalt();
         const { password } = updateUserDetails;
         const hash = await bcrypt.hash(password, salt);
-        await this.userRepository.update(
-            { id },
-            { ...updateUserDetails, password: hash },
-        );
+        await this.userRepository.update({ id }, { ...updateUserDetails, password: hash });
         delete updateUserDetails.password;
         return updateUserDetails;
     }

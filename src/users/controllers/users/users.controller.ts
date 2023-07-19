@@ -30,13 +30,7 @@ import { UnsupportedVersionException } from 'src/utils/exceptions/unsupportedVer
 import { User } from 'src/typeorm/entities/User';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import {
-    ApiBearerAuth,
-    ApiTags,
-    ApiOperation,
-    ApiResponse,
-    ApiBody,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { string } from '@hapi/joi';
 
 @ApiBearerAuth()
@@ -94,9 +88,7 @@ export class UsersController {
             // const [, , version] = req.path.split('/');
             let userList: User[] = [];
             if (version === 'v1') {
-                const cachedUsers = await this.cacheManager.get<User[]>(
-                    'users',
-                );
+                const cachedUsers = await this.cacheManager.get<User[]>('users');
                 if (cachedUsers) {
                     userList = cachedUsers;
                 } else {
@@ -117,10 +109,7 @@ export class UsersController {
 
     @Get(':id')
     // @Roles(Role.Admin)
-    async getUserById(
-        @Param('id', ParseIntPipe) id: number,
-        @Res() res: Response,
-    ) {
+    async getUserById(@Param('id', ParseIntPipe) id: number, @Res() res: Response) {
         try {
             const user = await this.userService.getUserById(id);
             if (user) {
@@ -153,10 +142,7 @@ export class UsersController {
             },
         },
     })
-    async updateUserById(
-        @Param('id', ParseIntPipe) id: number,
-        @Body() updateUserDto: UpdateUserDto,
-    ) {
+    async updateUserById(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto) {
         return this.userService.updateUser(id, updateUserDto);
     }
 

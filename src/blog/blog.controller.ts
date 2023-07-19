@@ -1,25 +1,8 @@
-import {
-    Controller,
-    Get,
-    Post,
-    Body,
-    Patch,
-    Param,
-    Delete,
-    Req,
-    UseInterceptors,
-    UploadedFile,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { BlogService } from './blog.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
-import {
-    ApiBearerAuth,
-    ApiBody,
-    ApiConsumes,
-    ApiResponse,
-    ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from 'src/config/services/multer.config';
@@ -44,11 +27,7 @@ export class BlogController {
     })
     @ApiConsumes('multipart/form-data')
     @UseInterceptors(FileInterceptor('image', multerOptions))
-    async create(
-        @Req() req: Request,
-        @Body() createBlogDto: CreateBlogDto,
-        @UploadedFile() image,
-    ) {
+    async create(@Req() req: Request, @Body() createBlogDto: CreateBlogDto, @UploadedFile() image) {
         console.log(multerOptions);
         const createdBy = req['user'].sub;
         await this.blogService.create(createdBy, createBlogDto, image);
@@ -65,10 +44,7 @@ export class BlogController {
     }
 
     @Patch(':id')
-    async update(
-        @Param('id') id: string,
-        @Body() updateBlogDto: UpdateBlogDto,
-    ) {
+    async update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
         return this.blogService.update(+id, updateBlogDto);
     }
 

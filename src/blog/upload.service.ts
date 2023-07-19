@@ -10,8 +10,7 @@ export class UploadsService {
     storage = diskStorage({
         destination: './uploads', // Specify the destination folder to store the uploaded images
         filename: (req, file, cb) => {
-            const uniqueSuffix =
-                Date.now() + '-' + Math.round(Math.random() * 1e9);
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
             const fileExtension = extname(file.originalname);
             cb(null, uniqueSuffix + fileExtension); // Generate a unique filename for the uploaded image
         },

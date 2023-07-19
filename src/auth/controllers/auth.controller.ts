@@ -1,13 +1,4 @@
-import {
-    Controller,
-    HttpCode,
-    HttpStatus,
-    Post,
-    Body,
-    Get,
-    Res,
-    UseGuards,
-} from '@nestjs/common';
+import { Controller, HttpCode, HttpStatus, Post, Body, Get, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from '../services/auth/auth.service';
 import { Public } from 'src/decorators/public.decorator';
@@ -32,10 +23,7 @@ export class AuthController {
         },
     })
     async signIn(@Body() signInDto: Record<string, any>) {
-        const res = await this.authService.signIn(
-            signInDto.username,
-            signInDto.password,
-        );
+        const res = await this.authService.signIn(signInDto.username, signInDto.password);
         return res;
     }
 

@@ -12,7 +12,7 @@ export class LoggerMiddleware implements NestMiddleware {
             format: winston.format.combine(
                 winston.format.timestamp(),
                 winston.format.simple(),
-                winston.format.printf((info) => {
+                winston.format.printf(info => {
                     const log = `[${info.timestamp}] [${info.level}] ${info.message}`;
                     return log;
                 }),

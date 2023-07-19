@@ -1,14 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import {
-    IsEmail,
-    IsEnum,
-    IsNotEmpty,
-    IsString,
-    Matches,
-    MaxLength,
-    MinLength,
-} from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsString, Matches, MaxLength, MinLength } from 'class-validator';
 import { UserType } from 'src/typeorm/entities/User';
 
 export class UpdateUserDto {
@@ -21,8 +13,7 @@ export class UpdateUserDto {
         message: 'Username is too long',
     })
     @Matches(/^[A-Za-z0-9_@-]+$/, {
-        message:
-            'Username should be a single word with only underscore, @ sign, hyphen sign, and numeric numbers',
+        message: 'Username should be a single word with only underscore, @ sign, hyphen sign, and numeric numbers',
     })
     username: string;
 
@@ -32,13 +23,10 @@ export class UpdateUserDto {
     @MaxLength(50, {
         message: 'Password must be not more than 50 characters long',
     })
-    @Matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-        {
-            message:
-                'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 digit, and 1 special character',
-        },
-    )
+    @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/, {
+        message:
+            'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 digit, and 1 special character',
+    })
     password: string;
 
     @IsEmail()

@@ -4,10 +4,7 @@ import { AuthService } from './auth.service';
 import { UsersService } from '../../../users/services/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import {
-    InternalServerErrorException,
-    UnauthorizedException,
-} from '@nestjs/common';
+import { InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 
 describe('AuthService', () => {
     let authService: AuthService;
@@ -52,20 +49,13 @@ describe('AuthService', () => {
                 createdAt: new Date(),
             };
             const mockJwtToken = 'mockJwtToken';
-            jest.spyOn(userService, 'getUserByUserName').mockResolvedValue(
-                mockUser,
-            );
+            jest.spyOn(userService, 'getUserByUserName').mockResolvedValue(mockUser);
             jest.spyOn(bcrypt, 'compare').mockReturnValue(true as any);
             jest.spyOn(jwtService, 'signAsync').mockResolvedValue(mockJwtToken);
 
             const result = await authService.signIn(username, password);
-            expect(userService.getUserByUserName).toHaveBeenCalledWith(
-                username,
-            );
-            expect(bcrypt.compare).toHaveBeenCalledWith(
-                password,
-                mockUser.password,
-            );
+            expect(userService.getUserByUserName).toHaveBeenCalledWith(username);
+            expect(bcrypt.compare).toHaveBeenCalledWith(password, mockUser.password);
             expect(jwtService.signAsync).toHaveBeenCalledWith({
                 sub: mockUser.id,
                 role: mockUser.role,
@@ -87,29 +77,23 @@ describe('AuthService', () => {
             };
 
             // Mock the userService.getUserByUserName method to return the mockUser
-            jest.spyOn(userService, 'getUserByUserName').mockResolvedValue(
-                mockUser,
-            );
+            jest.spyOn(userService, 'getUserByUserName').mockResolvedValue(mockUser);
 
             /* jest.spyOn(bcrypt, 'compare').mockImplementation(() =>
                 Promise.resolve(false),
             ); */
 
             // Mock the bcrypt.compare method to resolve the promise based on the password and hash
-            jest.spyOn(bcrypt, 'compare').mockImplementation(
-                async (pass: string, hash: string) => {
-                    const isMatch = await bcrypt.compare(pass, hash);
-                    return isMatch;
-                },
-            );
+            jest.spyOn(bcrypt, 'compare').mockImplementation(async (pass: string, hash: string) => {
+                const isMatch = await bcrypt.compare(pass, hash);
+                return isMatch;
+            });
 
             // Mock the jwtService.signAsync method to return a dummy access token
             jest.spyOn(jwtService, 'signAsync').mockResolvedValue('dummyToken');
 
             // Assert that the authService.signIn method throws an UnauthorizedException
-            await expect(
-                authService.signIn(username, password),
-            ).rejects.toThrow(UnauthorizedException);
+            await expect(authService.signIn(username, password)).rejects.toThrow(UnauthorizedException);
         });
     });
 });

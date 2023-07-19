@@ -130,9 +130,7 @@ describe('UsersService', () => {
             };
 
             jest.spyOn(configService, 'getSalt').mockReturnValue(mockSalt);
-            jest.spyOn(bcrypt, 'hash').mockImplementation(
-                async () => mockHash as string,
-            );
+            jest.spyOn(bcrypt, 'hash').mockImplementation(async () => mockHash as string);
             jest.spyOn(userRepository, 'create').mockReturnValue(mockNewUser);
             jest.spyOn(userRepository, 'save').mockResolvedValue(mockNewUser);
 
@@ -140,10 +138,7 @@ describe('UsersService', () => {
 
             expect(result).toEqual(mockNewUser);
             expect(configService.getSalt).toHaveBeenCalled();
-            expect(bcrypt.hash).toHaveBeenCalledWith(
-                mockUserDetails.password,
-                mockSalt,
-            );
+            expect(bcrypt.hash).toHaveBeenCalledWith(mockUserDetails.password, mockSalt);
             expect(userRepository.create).toHaveBeenCalledWith({
                 ...mockUserDetails,
                 password: mockHash,
@@ -168,10 +163,7 @@ describe('UsersService', () => {
 
             await service.updateUser(userId, mockUpdateUserDetails);
 
-            expect(userRepository.update).toHaveBeenCalledWith(
-                { id: userId },
-                mockUpdateUserDetails,
-            );
+            expect(userRepository.update).toHaveBeenCalledWith({ id: userId }, mockUpdateUserDetails);
         });
     });
 

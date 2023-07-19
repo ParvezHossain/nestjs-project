@@ -6,11 +6,7 @@ import helmet from 'helmet';
 import { ConfigService } from './config/services/config.service';
 import * as csurf from 'csurf';
 import { VERSION_NEUTRAL, VersioningType } from '@nestjs/common';
-import {
-    DocumentBuilder,
-    SwaggerDocumentOptions,
-    SwaggerModule,
-} from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerDocumentOptions, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
     dotenv.config({
@@ -36,8 +32,7 @@ async function bootstrap() {
         .build();
 
     const options: SwaggerDocumentOptions = {
-        operationIdFactory: (controllerKey: string, methodKey: string) =>
-            methodKey,
+        operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
     };
 
     const document = SwaggerModule.createDocument(app, swaggerConfig, options);
@@ -53,16 +48,9 @@ async function bootstrap() {
             crossOriginEmbedderPolicy: false,
             contentSecurityPolicy: {
                 directives: {
-                    imgSrc: [
-                        `'self'`,
-                        'data:',
-                        'apollo-server-landing-page.cdn.apollographql.com',
-                    ],
+                    imgSrc: [`'self'`, 'data:', 'apollo-server-landing-page.cdn.apollographql.com'],
                     scriptSrc: [`'self'`, `https: 'unsafe-inline'`],
-                    manifestSrc: [
-                        `'self'`,
-                        'apollo-server-landing-page.cdn.apollographql.com',
-                    ],
+                    manifestSrc: [`'self'`, 'apollo-server-landing-page.cdn.apollographql.com'],
                     frameSrc: [`'self'`, 'sandbox.embed.apollographql.com'],
                 },
             },

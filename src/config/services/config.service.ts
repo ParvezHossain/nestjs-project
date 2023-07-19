@@ -6,10 +6,7 @@ import { productionConfig, developmentConfig } from '../configuration';
 export class ConfigService {
     private readonly config: AppConfig;
     constructor() {
-        this.config =
-            process.env.NODE_ENV === 'production'
-                ? productionConfig()
-                : developmentConfig();
+        this.config = process.env.NODE_ENV === 'production' ? productionConfig() : developmentConfig();
     }
     getPort() {
         return this.config.port;

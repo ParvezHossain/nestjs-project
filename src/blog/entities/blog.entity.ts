@@ -1,11 +1,5 @@
 import { User } from 'src/typeorm/entities/User';
-import {
-    Column,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Blog {
@@ -18,7 +12,7 @@ export class Blog {
     @Column()
     content: string;
 
-    @ManyToOne(() => User, (user) => user.blogs, { onDelete: 'CASCADE' })
+    @ManyToOne(() => User, user => user.blogs, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'createdBy' })
     createdBy: User;
 

@@ -5,9 +5,7 @@ import { InjectQueue } from '@nestjs/bull';
 
 @Injectable()
 export class AppService {
-    constructor(
-        @InjectQueue(TRANSCODE_QUEUE) private readonly transcodeQueue: Queue,
-    ) {}
+    constructor(@InjectQueue(TRANSCODE_QUEUE) private readonly transcodeQueue: Queue) {}
     getHello(): string {
         return 'Hello World!';
     }

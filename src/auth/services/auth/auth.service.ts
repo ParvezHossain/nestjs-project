@@ -5,10 +5,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
-    constructor(
-        private readonly userService: UsersService,
-        private jwtService: JwtService,
-    ) {}
+    constructor(private readonly userService: UsersService, private jwtService: JwtService) {}
 
     async signIn(username: string, pass: string): Promise<any> {
         try {
