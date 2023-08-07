@@ -5,10 +5,10 @@ docker network create node-api-network
 
 docker run -it --rm --name mysql_server --network node-api-network -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=laravel -p 3306:3306 -d mysql:8.0
 
-docker run -it --rm --name docker-nestjs --network node-api-network -p 3000:3000 docker-nestjs
+docker run -it --rm --name docker-nestjs --network node-api-network -e NODE_ENV=production -p 3000:3000 docker-nestjs
 
 # Here we define how much resource a container will consume.
-docker run -it --rm --name docker-nestjs --network node-api-network --memory=512m --cpus=1 -p 3000:3000 docker-nestjs
+docker run -it --rm -d --name docker-nestjs --network node-api-network --memory=512m --cpus=1 -p 3000:3000 docker-nestjs
 
 
 
@@ -24,6 +24,9 @@ docker run -it --rm --name mysql_server --network node-api-network -e MYSQL_ROOT
 # In this command, -v /my/own/datadir:/var/lib/mysql creates a new volume named /my/own/datadir and mounts it to /var/lib/mysql inside the container. This will store your MySQL data outside the container and persist even if the container is deleted.
 
 
+#delete all docker images
+
+docker rmi -f $(docker images -q)
 
 # This command removes all the Docker containers that are currently running and stops them forcefully.
 docker rm -f $(docker ps -aq) 
