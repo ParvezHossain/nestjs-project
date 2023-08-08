@@ -1,5 +1,12 @@
 version: '3'
 
+networks:
+  node_api_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16
+
 services:
   mysql_server:
     image: mysql:latest
@@ -17,6 +24,9 @@ services:
       interval: 10s
       timeout: 10s
       retries: 5
+    networks:
+      node_api_network:
+        ipv4_address: 172.19.0.3
 
   app:
     build:
@@ -32,6 +42,10 @@ services:
         condition: service_healthy
     environment:
       - NODE_ENV=production
+    networks:
+      node_api_network:
+        ipv4_address: 172.19.0.5
+
   nginx:
     image: nginx:latest
     container_name: nginx_server
@@ -43,6 +57,11 @@ services:
       # - ./nginx/html:/usr/share/nginx/html
     depends_on:
       - app
+    networks:
+      node_api_network:
+        ipv4_address: 172.19.0.4
 
 volumes:
   mysql_data:
+
+
