@@ -33,3 +33,9 @@ docker rm -f $(docker ps -aq)
 
 # To delete all the stopped Docker containers, you can use the following command:
 docker container prune -f
+
+
+# change the host file if you want to map your node server to nginx server
+
+- Windows: C:\Windows\System32\drivers\etc\hosts
+- Linux/macOS: /etc/hosts

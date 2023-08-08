@@ -32,6 +32,17 @@ services:
         condition: service_healthy
     environment:
       - NODE_ENV=production
+  nginx:
+    image: nginx:latest
+    container_name: nginx_server
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/logs:/var/log/nginx
+      # - ./nginx/html:/usr/share/nginx/html
+    depends_on:
+      - app
 
 volumes:
   mysql_data:
