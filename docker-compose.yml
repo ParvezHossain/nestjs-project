@@ -8,9 +8,22 @@ networks:
         - subnet: 172.19.0.0/16
 
 services:
-  mysql_server:
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mysql_server_master   # Use the master MySQL server hostname or IP
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8080:80"  # You can access phpMyAdmin at http://localhost:8080
+    networks:
+      - node_api_network
+
+  mysql_server_master:
     image: mysql:latest
-    container_name: mysql_server
+    container_name: mysql_server_master
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -27,6 +40,24 @@ services:
     networks:
       node_api_network:
         ipv4_address: 172.19.0.3
+  
+  mysql_server_slave:
+    image: mysql:latest
+    container_name: mysql_server_slave
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel
+    volumes:
+      - mysql_server_slave:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    networks:
+      node_api_network:
+        ipv4_address: 172.19.0.7
 
   app:
     build:
@@ -38,8 +69,9 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      mysql_server:
-        condition: service_healthy
+       - redis_server
+       - mysql_server_master
+       - mysql_server_slave
     environment:
       - NODE_ENV=production
     networks:
@@ -57,11 +89,25 @@ services:
       # - ./nginx/html:/usr/share/nginx/html
     depends_on:
       - app
+      - redis_server
     networks:
       node_api_network:
         ipv4_address: 172.19.0.4
 
+
+  redis_server:  # New Redis service definition
+    image: redis:latest
+    container_name: redis_server
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    networks:
+      node_api_network:
+        ipv4_address: 172.19.0.6  # Adjust IP address as needed
+
 volumes:
   mysql_data:
+  mysql_server_master:
+  mysql_server_slave:
 
 
