@@ -78,3 +78,7 @@ Parvez@1
 
 Docker cached data
 # C:\Users\Asus\AppData\Local\Docker\wsl\data
+
+
+create ssl certificate [mkdir ssh into root directory]
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout localhost.key -out localhost.crt
