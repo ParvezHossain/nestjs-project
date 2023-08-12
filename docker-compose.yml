@@ -139,12 +139,14 @@ services:
     container_name: nginx_server
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       # - ./nginx/conf.d:/etc/nginx/conf.d
       # - ./nginx/conf.d/default.conf:/etc/nginx/default.conf:ro
       - nginx_config:/etc/nginx/conf.d
       - ./nginx/conf.d/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/logs:/var/log/nginx
+      - ./ssl:/etc/nginx/ssl
       # - ./nginx/html:/usr/share/nginx/html
     depends_on:
       - node_server_1
