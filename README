@@ -31,6 +31,8 @@ docker rmi -f $(docker images -q)
 # This command removes all the Docker containers that are currently running and stops them forcefully.
 docker rm -f $(docker ps -aq) 
 
+docker rm -f node_server
+
 # To delete all the stopped Docker containers, you can use the following command:
 docker container prune -f
 

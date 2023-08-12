@@ -13,7 +13,7 @@ services:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
     environment:
-      PMA_HOST: mysql_server_master   
+      PMA_HOST: mysql_server_master   # Use the master MySQL server hostname or IP
       PMA_USER: root
       PMA_PASSWORD: root
     ports:
@@ -60,11 +60,11 @@ services:
       node_api_network:
         ipv4_address: 172.19.0.7
 
-  node_server_1:
+  node_server:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: node_server_1
+    container_name: node_server
     working_dir: /app
     ports:
       - "3000:3000"
@@ -74,65 +74,14 @@ services:
        - mysql_server_slave
     environment:
       - NODE_ENV=production
-      - HOST_IP=node_server_1
+    # bind mount and anonymous volume should be used in development stage; will be removed in future 
+    # volumes:
+    #   - .:/app
+    #   - /app/dist
+    #   - /app/node_modules
     networks:
       node_api_network:
         ipv4_address: 172.19.0.5
-  node_server_2:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: node_server_2
-    working_dir: /app
-    ports:
-      - "3001:3000"
-    depends_on:
-       - redis_server
-       - mysql_server_master
-       - mysql_server_slave
-    environment:
-      - NODE_ENV=production
-      - HOST_IP=node_server_2
-    networks:
-      node_api_network:
-        ipv4_address: 172.19.0.8
-
-  node_server_3:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: node_server_3
-    working_dir: /app
-    ports:
-      - "3002:3000"
-    depends_on:
-       - redis_server
-       - mysql_server_master
-       - mysql_server_slave
-    environment:
-      - NODE_ENV=production
-      - HOST_IP=node_server_3
-    networks:
-      node_api_network:
-        ipv4_address: 172.19.0.9
-  node_server_4:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: node_server_4
-    working_dir: /app
-    ports:
-      - "3003:3000"
-    depends_on:
-       - redis_server
-       - mysql_server_master
-       - mysql_server_slave
-    environment:
-      - NODE_ENV=production
-      - HOST_IP=node_server_4
-    networks:
-      node_api_network:
-        ipv4_address: 172.19.0.10
 
   nginx:
     image: nginx:latest
@@ -140,39 +89,28 @@ services:
     ports:
       - "80:80"
     volumes:
-      # - ./nginx/conf.d:/etc/nginx/conf.d
-      # - ./nginx/conf.d/default.conf:/etc/nginx/default.conf:ro
-      - nginx_config:/etc/nginx/conf.d
-      - ./nginx/conf.d/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/logs:/var/log/nginx
       # - ./nginx/html:/usr/share/nginx/html
     depends_on:
-      - node_server_1
-      - node_server_2
-      - node_server_3
-      - node_server_4
+      - node_server
       - redis_server
     networks:
       node_api_network:
         ipv4_address: 172.19.0.4
 
 
-  redis_server:
+  redis_server:  # New Redis service definition
     image: redis:latest
     container_name: redis_server
     restart: unless-stopped
     ports:
       - 6379:6379
-    volumes:
-      - redis_data:/data  
     networks:
       node_api_network:
         ipv4_address: 172.19.0.6  # Adjust IP address as needed
 
 volumes:
+  mysql_data:
   mysql_server_master:
   mysql_server_slave:
-  redis_data:
-  nginx_config:
-
-

@@ -21,6 +21,7 @@ const productionConfig = () => ({
         host: process.env.REDIS_HOST,
         port: parseInt(process.env.REDIS_PORT),
     },
+    node_server_host: process.env.HOST_IP,
 });
 
 const developmentConfig = () => ({
@@ -46,6 +47,7 @@ const developmentConfig = () => ({
         host: process.env.REDIS_HOST,
         port: parseInt(process.env.REDIS_PORT),
     },
+    node_server_host: process.env.HOST_IP,
 });
 
 export { productionConfig, developmentConfig };

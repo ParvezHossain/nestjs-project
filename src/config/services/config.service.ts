@@ -23,6 +23,10 @@ export class ConfigService {
         return this.config.salt;
     }
 
+    getNodeHost() {
+        return this.config.node_server_host;
+    }
+
     get database(): {
         host: string;
         port: number;
