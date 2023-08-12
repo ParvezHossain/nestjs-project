@@ -21,4 +21,5 @@ export interface AppConfig {
         host: string;
         port: number;
     };
+    node_server_host: string;
 }

@@ -4,7 +4,6 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 import helmet from 'helmet';
 import { ConfigService } from './config/services/config.service';
-import * as csurf from 'csurf';
 import { VERSION_NEUTRAL, VersioningType } from '@nestjs/common';
 import {
     DocumentBuilder,
@@ -69,6 +68,6 @@ async function bootstrap() {
         }),
     );
     const configService = new ConfigService();
-    await app.listen(configService.getPort());
+    await app.listen(configService.getPort(), configService.getNodeHost());
 }
 bootstrap();
