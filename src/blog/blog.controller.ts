@@ -23,6 +23,7 @@ import {
 import { Request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from 'src/config/services/multer.config';
+import { Public } from 'src/decorators/public.decorator';
 
 @ApiBearerAuth()
 @ApiTags('Blogs')
@@ -51,10 +52,17 @@ export class BlogController {
     ) {
         console.log(multerOptions);
         const createdBy = req['user'].sub;
-        await this.blogService.create(createdBy, createBlogDto, image);
+        const data = await this.blogService.create(
+            createdBy,
+            createBlogDto,
+            image,
+        );
+
+        return data;
     }
 
     @Get()
+    @Public()
     async findAll() {
         return this.blogService.findAll();
     }
