@@ -4,7 +4,6 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 import helmet from 'helmet';
 import { ConfigService } from './config/services/config.service';
-import * as csurf from 'csurf';
 import { VERSION_NEUTRAL, VersioningType } from '@nestjs/common';
 import {
     DocumentBuilder,
@@ -17,8 +16,12 @@ async function bootstrap() {
     dotenv.config({
         path: path.resolve(__dirname, '../src/', 'config', '.env'),
     });
-    const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-        cors: true,
+    const app = await NestFactory.create<NestExpressApplication>(AppModule);
+    // Add CORS configuration here
+    app.enableCors({
+        origin: 'http://localhost:4200', // Replace with your frontend domain
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        credentials: true, // Allow sending cookies across domains
     });
     app.setGlobalPrefix('api');
     app.enableVersioning({
@@ -46,7 +49,6 @@ async function bootstrap() {
 
     const document = SwaggerModule.createDocument(app, swaggerConfig, options);
     SwaggerModule.setup('api', app, document);
-    app.enableCors();
     app.use(
         helmet({
             hsts: {
@@ -73,6 +75,7 @@ async function bootstrap() {
         }),
     );
     const configService = new ConfigService();
-    await app.listen(configService.getPort(), configService.getNodeHost());
+    await app.listen(configService.getPort(), "192.168.1.247");
+    // await app.listen(configService.getPort(), configService.getNodeHost());
 }
 bootstrap();
