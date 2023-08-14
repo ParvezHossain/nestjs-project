@@ -25,7 +25,7 @@ async function bootstrap() {
         type: VersioningType.URI,
         defaultVersion: VERSION_NEUTRAL,
     });
-    app.useStaticAssets(join(__dirname, '..', 'public'), {
+    app.useStaticAssets(path.join(__dirname, '..', 'public'), {
         prefix: '/public/',
     });
 
@@ -46,7 +46,7 @@ async function bootstrap() {
 
     const document = SwaggerModule.createDocument(app, swaggerConfig, options);
     SwaggerModule.setup('api', app, document);
-    // app.use(csurf());
+    app.enableCors();
     app.use(
         helmet({
             hsts: {
