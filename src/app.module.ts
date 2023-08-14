@@ -24,9 +24,14 @@ import { TRANSCODE_QUEUE } from './utils/constants';
 import { Blog } from './blog/entities/blog.entity';
 import { BlogModule } from './blog/blog.module';
 import { TranscodeConsumer } from './utils/consumers/transcode.consumer';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 @Module({
     imports: [
         ScheduleModule.forRoot(),
+        ServeStaticModule.forRoot({
+            rootPath: join(__dirname, '..', 'public'),
+        }),
         BullModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],

@@ -8,7 +8,7 @@ export class UploadsService {
 
     // Define the multer storage configuration
     storage = diskStorage({
-        destination: './uploads', // Specify the destination folder to store the uploaded images
+        destination: '/public', // Specify the destination folder to store the uploaded images
         filename: (req, file, cb) => {
             const uniqueSuffix =
                 Date.now() + '-' + Math.round(Math.random() * 1e9);

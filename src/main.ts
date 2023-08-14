@@ -5,24 +5,29 @@ import * as path from 'path';
 import helmet from 'helmet';
 import { ConfigService } from './config/services/config.service';
 import * as csurf from 'csurf';
+import { join } from 'path';
 import { VERSION_NEUTRAL, VersioningType } from '@nestjs/common';
 import {
     DocumentBuilder,
     SwaggerDocumentOptions,
     SwaggerModule,
 } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
     dotenv.config({
         path: path.resolve(__dirname, '../src/', 'config', '.env'),
     });
-    const app = await NestFactory.create(AppModule, {
+    const app = await NestFactory.create<NestExpressApplication>(AppModule, {
         cors: true,
     });
     app.setGlobalPrefix('api');
     app.enableVersioning({
         type: VersioningType.URI,
         defaultVersion: VERSION_NEUTRAL,
+    });
+    app.useStaticAssets(join(__dirname, '..', 'public'), {
+        prefix: '/public/',
     });
 
     // Swagger Documentation
