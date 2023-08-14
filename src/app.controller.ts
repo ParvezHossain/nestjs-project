@@ -3,14 +3,18 @@ import { AppService } from './app.service';
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from './decorators/public.decorator';
+import { ConfigService } from './config/services/config.service';
 @ApiTags('App')
 @Controller()
 export class AppController {
     constructor(private readonly appService: AppService) {}
     @Public()
-    @Get()
+    @Get('/greet')
     getHello(@Res() res: Response): void {
-        const jsonData = { message: 'Hello, World!' };
+        const configService = new ConfigService();
+        const jsonData = {
+            message: `Server is running on this IP: ${configService.getNodeHost()}`,
+        };
         res.json(jsonData);
     }
     @Public()
