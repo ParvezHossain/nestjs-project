@@ -10,18 +10,26 @@ import {
     SwaggerDocumentOptions,
     SwaggerModule,
 } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
     dotenv.config({
         path: path.resolve(__dirname, '../src/', 'config', '.env'),
     });
-    const app = await NestFactory.create(AppModule, {
-        cors: true,
+    const app = await NestFactory.create<NestExpressApplication>(AppModule);
+    // Add CORS configuration here
+    app.enableCors({
+        origin: 'http://localhost:4200', // Replace with your frontend domain
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        credentials: true, // Allow sending cookies across domains
     });
     app.setGlobalPrefix('api');
     app.enableVersioning({
         type: VersioningType.URI,
         defaultVersion: VERSION_NEUTRAL,
+    });
+    app.useStaticAssets(path.join(__dirname, '..', 'public'), {
+        prefix: '/public/',
     });
 
     // Swagger Documentation
@@ -41,7 +49,6 @@ async function bootstrap() {
 
     const document = SwaggerModule.createDocument(app, swaggerConfig, options);
     SwaggerModule.setup('api', app, document);
-    // app.use(csurf());
     app.use(
         helmet({
             hsts: {
@@ -68,6 +75,7 @@ async function bootstrap() {
         }),
     );
     const configService = new ConfigService();
-    await app.listen(configService.getPort(), configService.getNodeHost());
+    await app.listen(configService.getPort(), "192.168.1.247");
+    // await app.listen(configService.getPort(), configService.getNodeHost());
 }
 bootstrap();

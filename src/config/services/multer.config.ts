@@ -7,14 +7,15 @@ import { v4 as uuid } from 'uuid';
 // Multer configuration
 // console.log('Path: ', process.env.MULTER_IMAGE_UPLOAD_DESTINATION);
 export const multerConfig = {
-    dest: 'src/resources/images',
+    dest: 'public/images',
 };
 
 // Multer upload options
 export const multerOptions = {
     // Enable file size limits
     limit: {
-        fileSize: +process.env.MAX_FILE_SIZE ?? 5,
+        fileSize: 5,
+        // fileSize: +process.env.MAX_FILE_SIZE ?? 5,
     },
     // Check the mimetypes to allow for upload
     fileFilter: (req: any, file: any, cb: any) => {
