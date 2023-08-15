@@ -26,6 +26,12 @@ export class ConfigService {
     getNodeHost() {
         return this.config.node_server_host;
     }
+    getMulterImageUploadPath() {
+        return this.config.MULTER_IMAGE_UPLOAD_DESTINATION;
+    }
+    getMulterImageMaxFileSize() {
+        return this.config.MULTER_IMAGE_UPLOAD_MAX_FILE_SIZE;
+    }
 
     get database(): {
         host: string;
