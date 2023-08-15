@@ -3,11 +3,10 @@ import { existsSync, mkdirSync } from 'fs';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { v4 as uuid } from 'uuid';
+import { ConfigService } from './config.service';
 
-// Multer configuration
-// console.log('Path: ', process.env.MULTER_IMAGE_UPLOAD_DESTINATION);
 export const multerConfig = {
-    dest: 'public/images',
+    dest: new ConfigService().getMulterImageMaxFileSize(),
 };
 
 // Multer upload options
@@ -37,7 +36,7 @@ export const multerOptions = {
     storage: diskStorage({
         // Destination storage path details
         destination: (req: any, file: any, cb: any) => {
-            const uploadPath = multerConfig.dest;
+            const uploadPath = new ConfigService().getMulterImageUploadPath();
             if (!existsSync(uploadPath)) {
                 mkdirSync(uploadPath);
             }

@@ -22,6 +22,10 @@ const productionConfig = () => ({
         port: parseInt(process.env.REDIS_PORT),
     },
     node_server_host: process.env.HOST_IP,
+    MULTER_IMAGE_UPLOAD_DESTINATION:
+        process.env.MULTER_IMAGE_UPLOAD_DESTINATION,
+    MULTER_IMAGE_UPLOAD_MAX_FILE_SIZE:
+        process.env.MULTER_IMAGE_UPLOAD_MAX_FILE_SIZE,
 });
 
 const developmentConfig = () => ({
@@ -48,6 +52,10 @@ const developmentConfig = () => ({
         port: parseInt(process.env.REDIS_PORT),
     },
     node_server_host: process.env.HOST_IP,
+    MULTER_IMAGE_UPLOAD_DESTINATION:
+        process.env.MULTER_IMAGE_UPLOAD_DESTINATION,
+    MULTER_IMAGE_UPLOAD_MAX_FILE_SIZE:
+        process.env.MULTER_IMAGE_UPLOAD_MAX_FILE_SIZE,
 });
 
 export { productionConfig, developmentConfig };

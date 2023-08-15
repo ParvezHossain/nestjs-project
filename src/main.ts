@@ -19,7 +19,7 @@ async function bootstrap() {
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
     // Add CORS configuration here
     app.enableCors({
-        origin: 'http://localhost:4200', // Replace with your frontend domain
+        origin: ['http://localhost:4200', 'http://localhost:3000'], // Replace with your frontend domain
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         credentials: true, // Allow sending cookies across domains
     });
@@ -75,7 +75,6 @@ async function bootstrap() {
         }),
     );
     const configService = new ConfigService();
-    await app.listen(configService.getPort(), "192.168.1.247");
-    // await app.listen(configService.getPort(), configService.getNodeHost());
+    await app.listen(configService.getPort(), configService.getNodeHost());
 }
 bootstrap();

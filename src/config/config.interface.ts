@@ -22,4 +22,6 @@ export interface AppConfig {
         port: number;
     };
     node_server_host: string;
+    MULTER_IMAGE_UPLOAD_DESTINATION: string;
+    MULTER_IMAGE_UPLOAD_MAX_FILE_SIZE: string;
 }
