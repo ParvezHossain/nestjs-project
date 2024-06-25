@@ -1,0 +1,80 @@
+name: Deploy to EC2
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v2
+              with:
+                  node-version: '14' # Change to your project's Node.js version
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Run tests
+              run: npm test
+
+            - name: Lint code
+              run: npm run lint
+
+            - name: Build project
+              run: npm run build
+
+            - name: Upload build artifacts
+              uses: actions/upload-artifact@v2
+              with:
+                  name: build-artifacts
+                  path: dist
+
+            - name: Download build artifacts
+              uses: actions/download-artifact@v2
+              with:
+                  name: build-artifacts
+                  path: dist
+
+            - name: Copy files to EC2
+              uses: appleboy/scp-action@v0.1.3
+              with:
+                  host: ${{ secrets.EC2_HOST }}
+                  username: ${{ secrets.EC2_USER }}
+                  key: ${{ secrets.EC2_SSH_KEY }}
+                  source: 'dist/*'
+                  target: '/home/ec2-user/app'
+
+            - name: Deploy to EC2
+              uses: appleboy/ssh-action@v0.1.3
+              with:
+                  host: ${{ secrets.EC2_HOST }}
+                  username: ${{ secrets.EC2_USER }}
+                  key: ${{ secrets.EC2_SSH_KEY }}
+                  script: |
+                      cd /home/ec2-user/app
+                      # Ensure .env file is present on the server, possibly copied through scp earlier
+                      # Run database migrations
+                      npm run typeorm migration:run
+                      # Install production dependencies
+                      npm install --production
+                      # Restart the application using PM2
+                      pm2 restart all
+
+            - name: Send Slack Notification
+              uses: rtCamp/action-slack-notify@v2.0.0
+              if: always()
+              env:
+                  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+                  SLACK_CHANNEL: '#deployments'
+                  SLACK_USERNAME: 'github-actions'
+                  SLACK_ICON_EMOJI: ':rocket:'
+                  SLACK_COLOR: good
+              with:
+                  message: 'Deployment to EC2 instance completed successfully.'
