@@ -1,0 +1,92 @@
+version: '3.8'
+
+networks:
+  custom_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.25.0.0/16
+
+services:
+  nginx:
+    image: nginx:latest
+    networks:
+      custom_network:
+        ipv4_address: 172.25.0.2
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./html:/usr/share/nginx/html
+
+  php:
+    image: php:8.0.1-fpm
+    networks:
+      custom_network:
+        ipv4_address: 172.25.0.3
+    volumes:
+      - ./php.ini:/usr/local/etc/php/php.ini
+      - ./html:/var/www/html
+
+  mariadb:
+    image: mariadb:8
+    networks:
+      custom_network:
+        ipv4_address: 172.25.0.4
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: dbname
+      MYSQL_USER: dbuser
+      MYSQL_PASSWORD: dbpassword
+    volumes:
+      - ./fb.sql:/docker-entrypoint-initdb.d/fb.sql
+
+  php_script:
+    image: php:8.0.1-cli
+    networks:
+      custom_network:
+        ipv4_address: 172.25.0.5
+    volumes:
+      - ./php_script.php:/usr/local/src/php_script.php
+    command: php /usr/local/src/php_script.php
+
+  node:
+    image: node:latest
+    networks:
+      custom_network:
+        ipv4_address: 172.25.0.6
+    volumes:
+      - ./nodejs_script.js:/app/nodejs_script.js
+      - ./pm2.config.js:/app/pm2.config.js
+    command: pm2-runtime start pm2.config.js
+
+  shell:
+    image: alpine:latest
+    networks:
+      custom_network:
+        ipv4_address: 172.25.0.7
+    volumes:
+      - ./shell_script.sh:/app/shell_script.sh
+    command: sh /app/shell_script.sh
+
+  onlyoffice:
+    image: onlyoffice/documentserver:latest
+    networks:
+      custom_network:
+        ipv4_address: 172.25.0.8
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    networks:
+      custom_network:
+        ipv4_address: 172.25.0.9
+    environment:
+      PMA_HOST: mariadb
+      PMA_USER: dbuser
+      PMA_PASSWORD: dbpassword
+      PMA_ARBITRARY: 1
+    ports:
+      - "8080:80"

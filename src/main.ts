@@ -49,6 +49,13 @@ async function bootstrap() {
 
     const document = SwaggerModule.createDocument(app, swaggerConfig, options);
     SwaggerModule.setup('api', app, document);
+
+    /**
+     * HSTS: Enables HTTP Strict Transport Security (HSTS) to force browsers to connect securely over HTTPS.
+     * Cross-Origin Embedder Policy: Disables this policy, which could be necessary for certain embedded content.
+     * Content Security Policy: Restricts the sources from which images, scripts, manifests, and embedded frames can be loaded.
+     */
+
     app.use(
         helmet({
             hsts: {
